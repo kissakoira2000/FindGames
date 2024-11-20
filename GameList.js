@@ -1,25 +1,14 @@
 import { View, StyleSheet, FlatList } from 'react-native';
 import { useState, useEffect } from 'react';
 import { TextInput, Button, Card, Text, IconButton } from 'react-native-paper';
-import * as Location from 'expo-location';
-import { db } from './App';
 import { collection, addDoc } from 'firebase/firestore';
+import { db } from './firebaseconfig';
 
 export default function GameList() {
   const [keyword, setKeyword] = useState('');
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === 'granted') {
-        let location = await Location.getCurrentPositionAsync({});
-        setLocation(location);
-      }
-    })();
-  }, []);
 
   const searchGames = () => {
     setLoading(true);
@@ -37,12 +26,7 @@ export default function GameList() {
         gameID: game.gameID,
         cheapest: game.cheapest,
         timestamp: new Date(),
-        location: location ? {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude
-        } : null
       });
-      console.log("Game added to favorites with ID: ", docRef.id);
     } catch (error) {
       console.error("Error adding game: ", error);
     }

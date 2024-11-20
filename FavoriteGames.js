@@ -1,6 +1,6 @@
 import { View, StyleSheet, FlatList } from 'react-native';
 import { useState, useEffect } from 'react';
-import { Card, Text, IconButton } from 'react-native-paper';
+import { Card, Text, IconButton, Icon } from 'react-native-paper';
 import { collection, query, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { db } from './firebaseconfig';
 
