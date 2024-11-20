@@ -21,6 +21,7 @@ export default function FavoriteGames() {
     return () => unsubscribe();
   }, []);
 
+  
   const removeFromFavorites = async (id) => {
     try {
       await deleteDoc(doc(db, "favorites", id));

@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
+// koita saada firebase toimimaan
 const firebaseConfig = {
   apiKey: "AIzaSyDci78DERnHha-iRD90Fu_80aN04AZcfwc",
   authDomain: "findgames-b0407.firebaseapp.com",
@@ -24,11 +25,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
+
 export default function App() {
   return (
     <PaperProvider>
       <NavigationContainer>
-        <Tab.Navigator
+        <Tab.Navigator //tehdään alabaarin iconeista hienommat näkösiä
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
               let iconName;
