@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyCEqXR1tMVLA28GHHkOjF1pCK1VVlTOnLw",
   authDomain: "findgames2.firebaseapp.com",

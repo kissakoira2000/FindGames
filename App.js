@@ -5,6 +5,7 @@ import GameList from './GameList';
 import FavoriteGames from './FavoriteGames';
 import { Ionicons } from '@expo/vector-icons';
 
+// luodaan alatason navigaattori
 const Tab = createBottomTabNavigator();
 
 export default function App() {

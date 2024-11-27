@@ -1,18 +1,23 @@
 import { View, StyleSheet, FlatList, Linking, Image } from 'react-native';
 import { useState } from 'react';
-import { TextInput, Button, Card, Text, IconButton, Menu } from 'react-native-paper';
+import { TextInput, Button, Card, Text, IconButton, Menu, Snackbar } from 'react-native-paper';
 import { app } from './firebaseconfig';
 import { getDatabase, ref, push } from 'firebase/database';
+
 
 const db = getDatabase(app);
 
 export default function GameList() {
+
   const [keyword, setKeyword] = useState('');
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortMenuVisible, setSortMenuVisible] = useState(false);
   const [currentSort, setCurrentSort] = useState('Title (A-Z)');
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
+  // Järjestelyvaihtoehdot
   const sortOptions = {
     'Title (A-Z)': { sortBy: 'Title', desc: 0 },
     'Title (Z-A)': { sortBy: 'Title', desc: 1 },
@@ -20,7 +25,7 @@ export default function GameList() {
     'Price (High to Low)': { sortBy: 'Price', desc: 1 }
   };
 
-  //haetaan pelejä
+  // Haetaan pelit API:sta
   const searchGames = (sortOption = sortOptions[currentSort]) => {
     setLoading(true);
     
@@ -35,6 +40,7 @@ export default function GameList() {
       .finally(() => setLoading(false));
   };
 
+  // Lisätään peli suosikkeihin
   const addToFavorites = async (game) => {
     try {
       await push(ref(db, "favorites"), {
@@ -44,11 +50,17 @@ export default function GameList() {
         dealID: game.dealID,
         thumb: game.thumb,
       });
+      
+      setSnackbarMessage(`${game.title} added to favorites`);
+      setSnackbarVisible(true);
     } catch (error) {
       console.error("Error adding game: ", error);
+      setSnackbarMessage('Failed to add game to favorites');
+      setSnackbarVisible(true);
     }
   };
-
+  
+  // Avataan diilin linkki
   const openDealLink = (dealID) => {
     const url = `https://www.cheapshark.com/redirect?dealID=${dealID}`;
     Linking.openURL(url).catch(err => console.error("Error opening link: ", err));
@@ -82,7 +94,7 @@ export default function GameList() {
           }}
         >
           Clear
-      </Button>
+        </Button>
         <Menu
           visible={sortMenuVisible}
           onDismiss={() => setSortMenuVisible(false)}
@@ -141,9 +153,22 @@ export default function GameList() {
           </Card>
         )}
       />
+
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={3000}
+        action={{
+          label: 'Close',
+          onPress: () => setSnackbarVisible(false)
+        }}
+      >
+        {snackbarMessage}
+      </Snackbar>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
