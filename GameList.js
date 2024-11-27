@@ -1,8 +1,10 @@
 import { View, StyleSheet, FlatList, Linking, Image } from 'react-native';
 import { useState } from 'react';
 import { TextInput, Button, Card, Text, IconButton, Menu } from 'react-native-paper';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from './firebaseconfig';
+import { app } from './firebaseconfig';
+import { getDatabase, ref, push } from 'firebase/database';
+
+const db = getDatabase(app);
 
 export default function GameList() {
   const [keyword, setKeyword] = useState('');
@@ -18,6 +20,7 @@ export default function GameList() {
     'Price (High to Low)': { sortBy: 'Price', desc: 1 }
   };
 
+  //haetaan pelejä
   const searchGames = (sortOption = sortOptions[currentSort]) => {
     setLoading(true);
     
@@ -34,12 +37,12 @@ export default function GameList() {
 
   const addToFavorites = async (game) => {
     try {
-      await addDoc(collection(db, "favorites"), {
+      await push(ref(db, "favorites"), {
         title: game.title,
         cheapest: game.salePrice,
         normalPrice: game.normalPrice,
         dealID: game.dealID,
-        thumb: game.thumb
+        thumb: game.thumb,
       });
     } catch (error) {
       console.error("Error adding game: ", error);
@@ -70,6 +73,16 @@ export default function GameList() {
         >
           Search
         </Button>
+        <Button
+          mode="outlined"
+          icon="close"
+          onPress={() => {
+            setKeyword('');
+            setGames([]);
+          }}
+        >
+          Clear
+      </Button>
         <Menu
           visible={sortMenuVisible}
           onDismiss={() => setSortMenuVisible(false)}
@@ -79,11 +92,11 @@ export default function GameList() {
               onPress={() => setSortMenuVisible(true)}
               icon="sort"
             >
-              {currentSort}
+              Sort
             </Button>
           }
         >
-          {Object.keys(sortOptions).map((option) => (
+          {Object.keys(sortOptions).map((option) => (         //valikko josta valitaa pelien jäjestys
             <Menu.Item
               key={option}
               onPress={() => {

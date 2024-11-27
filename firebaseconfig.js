@@ -1,18 +1,15 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDci78DERnHha-iRD90Fu_80aN04AZcfwc",
-  authDomain: "findgames-b0407.firebaseapp.com",
-  projectId: "findgames-b0407",
-  storageBucket: "findgames-b0407.firebasestorage.app",
-  messagingSenderId: "711135087589",
-  appId: "1:711135087589:web:f002ae74cdd3c0e6b5bd0c",
-  measurementId: "G-61W5K6MYR3"
+  apiKey: "AIzaSyCEqXR1tMVLA28GHHkOjF1pCK1VVlTOnLw",
+  authDomain: "findgames2.firebaseapp.com",
+  databaseURL: "https://findgames2-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "findgames2",
+  storageBucket: "findgames2.firebasestorage.app",
+  messagingSenderId: "135428462089",
+  appId: "1:135428462089:web:aad3717bb6aef03f764ad8"
 };
 
-
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
-
-export default app;
+// Initialize Firebase
+export const app = initializeApp(firebaseConfig);

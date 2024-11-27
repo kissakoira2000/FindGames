@@ -4,7 +4,6 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import GameList from './GameList';
 import FavoriteGames from './FavoriteGames';
 import { Ionicons } from '@expo/vector-icons';
-import { db } from './firebaseconfig';
 
 const Tab = createBottomTabNavigator();
 

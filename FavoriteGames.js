@@ -1,31 +1,37 @@
 import { View, StyleSheet, FlatList, Linking, Image } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Card, Text, IconButton } from 'react-native-paper';
-import { collection, query, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
-import { db } from './firebaseconfig';
+import { getDatabase, ref, onValue, remove } from 'firebase/database';
+import { app } from './firebaseconfig';
+
+const db = getDatabase(app);
 
 export default function FavoriteGames() {
   const [favorites, setFavorites] = useState([]);
 
+  //haetaan suosikit tietokannasta
   useEffect(() => {
-    const q = query(collection(db, "favorites"));
-    return onSnapshot(q, (querySnapshot) => {
-      const gamesArray = querySnapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id
-      }));
+    const favoritesRef = ref(db, "favorites");
+    onValue(favoritesRef, (snapshot) => {
+      const data = snapshot.val();
+      const gamesArray = data ? Object.keys(data).map(key => ({
+        ...data[key],
+        id: key
+      })) : [];
       setFavorites(gamesArray);
     });
   }, []);
 
+  //poistetaan suosikeista
   const removeFromFavorites = async (id) => {
     try {
-      await deleteDoc(doc(db, "favorites", id));
+      await remove(ref(db, `favorites/${id}`));
     } catch (error) {
       console.error("Error removing game: ", error);
     }
   };
 
+  //avataan diilin linkki
   const openDealLink = (dealID) => {
     const url = `https://www.cheapshark.com/redirect?dealID=${dealID}`;
     Linking.openURL(url).catch(err => console.error("Error opening link: ", err));
